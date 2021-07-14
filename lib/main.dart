@@ -49,64 +49,81 @@ class _HomeState extends State<MyHomePage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(title: Text("Knapsack Dart"),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-             TextFormField(
-              controller: wController,
-              decoration: InputDecoration.collapsed(hintText: "Comma separated weights"),
-               validator: (value){
-                if(value.isEmpty) return "Enter box weights separated by commas";
-                if(value.replaceAll(" ", "").split(",").length != vController.text.replaceAll(" ", "").split(",").length){
-                  return "No of weights must be same with number of values";
-                }
-                return null;
-               },
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 30),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 10,),
+                 TextFormField(
+                  controller: wController,
+                  decoration: InputDecoration(hintText: "Comma separated weights",
+                    border: OutlineInputBorder(),),
+                   validator: (value){
+                    if(value.isEmpty) return "Enter box weights separated by commas";
+                    if(value.replaceAll(" ", "").split(",").length != vController.text.replaceAll(" ", "").split(",").length){
+                      return "No of weights must be same with number of values";
+                    }
+                    return null;
+                   },
+                ),
+
+                SizedBox(height: 10,),
+                TextFormField(
+                  controller: vController,
+                  decoration: InputDecoration(hintText: "Comma separated values",
+                      border: OutlineInputBorder()),
+                  validator: (value){
+                    if(value.isEmpty) return "Enter box value separated by commas";
+                    if(value.replaceAll(" ", "").split(",").length != wController.text.replaceAll(" ", "").split(",").length){
+                      return "No of values must be same with number of weights";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10,),
+                TextFormField(
+                  controller: weightLimitController,
+                  decoration: InputDecoration(hintText: "Box weight limit",
+                      border: OutlineInputBorder()),
+                  validator: (value){
+                    if(value.isEmpty) return "Enter box weight limit";
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10,),
+                RaisedButton(
+                  child: Text("Knaksnap"),
+                    onPressed: (){
+                  if(_formKey.currentState.validate()){
+                    var weights = wController.text.replaceAll(" ", "").split(",").map((e) => int.parse(e)).toList();
+                    var values = vController.text.replaceAll(" ", "").split(",").map((e) => int.parse(e)).toList();
+                    List<Box> boxes = [];
+                    for(int i = 0; i < weights.length; i++){
+                      boxes.add(Box(name: "Box $i", weight: weights[i], value: values[i]));
+                    }
+
+                    Knapsack knapsack1 = Knapsack(boxes: boxes, weightLimit: int.parse(weightLimitController.text.trim()));
+                    var ans1 = knapsack1.solve();
+                    Knapsack2 knapsack = Knapsack2(boxes: boxes, weightLimit: int.parse(weightLimitController.text.trim()));
+                    var ans2 = knapsack.solve();
+                    setState(() {
+                      answer = "solution1: $ans1\n\nsolution2: $ans2";
+                    });
+                  }
+                }),
+
+                Text(answer ?? ""),
+                SizedBox(height: 10,),
+
+              ],
             ),
-
-            TextFormField(
-              controller: vController,
-              decoration: InputDecoration.collapsed(hintText: "Comma separated values"),
-              validator: (value){
-                if(value.isEmpty) return "Enter box value separated by commas";
-                if(value.replaceAll(" ", "").split(",").length != wController.text.replaceAll(" ", "").split(",").length){
-                  return "No of values must be same with number of weights";
-                }
-                return null;
-              },
-            ),
-
-            TextFormField(
-              controller: weightLimitController,
-              decoration: InputDecoration.collapsed(hintText: "Box weight limit"),
-              validator: (value){
-                if(value.isEmpty) return "Enter box weight limit";
-                return null;
-              },
-            ),
-            RaisedButton(onPressed: (){
-              if(_formKey.currentState.validate()){
-                var weights = wController.text.replaceAll(" ", "").split(",").map((e) => int.parse(e)).toList();
-                var values = vController.text.replaceAll(" ", "").split(",").map((e) => int.parse(e)).toList();
-                List<Box> boxes = [];
-                for(int i = 0; i < weights.length; i++){
-                  boxes.add(Box(name: "Box $i", weight: weights[i], value: values[i]));
-                }
-
-                Knapsack knapsack = Knapsack(boxes: boxes, weightLimit: int.parse(weightLimitController.text.trim()));
-                var ans = knapsack.solve();
-                setState(() {
-                  answer = ans;
-                });
-              }
-            }),
-
-            Text(answer),
-
-          ],
+          ),
         ),
       ),
     );
