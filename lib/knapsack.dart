@@ -50,25 +50,20 @@ class Knapsack {
     //first row is assuming that there are no boxes at all,
     //so there is nothing to put in the bag, so value for all the cells in that row will be zero
     // initialize first row to 0
-    // for (int i = 0; i <= weightLimit; i++) {
-    //   table[0][i] = 0;
-    // }
+    for (int i = 0; i <= weightLimit; i++) {
+      table[0][i] = 0;
+    }
 
     // we iterate on items
     for (int i = 1; i <= noOfBoxes; i++) {
       // we iterate on each weight limit
       for (int j = 0; j <= weightLimit; j++) {
 
-        //first row is assuming that there are no boxes at all,
-        //so there is nothing to put in the bag, so value for all the cells in that row will be zero
-        // initialize first row to 0
-        if(i == 0 || j == 0){
-          table[i][j] = 0;
-        }
+
         //if the value in the cell directly above is greater than the weight, choose the above value
         //as we can agree that the one with the greater value is the optimized solution
         //get the
-        else if (boxes[i - 1].weight > j) {
+        if (boxes[i - 1].weight > j) {
           table[i][j] = table[i - 1][j];
         } else {
           // we save the max of both value in the matrix
@@ -93,7 +88,7 @@ class Knapsack {
     }
 
     printTime();
-    return "Boxes: ${selectedBoxes.toString()} --- max weight: ${table[noOfBoxes][weightLimit]}";
+    return "Boxes: ${selectedBoxes.toString()} --- max value: ${table[noOfBoxes][weightLimit]}";
   }
 }
 

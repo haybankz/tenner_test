@@ -113,7 +113,7 @@ class _HomeState extends State<MyHomePage>{
                     Knapsack2 knapsack = Knapsack2(boxes: boxes, weightLimit: int.parse(weightLimitController.text.trim()));
                     var ans2 = knapsack.solve();
                     setState(() {
-                      answer = "solution1: $ans1\n\nsolution2: $ans2";
+                      answer = "solution1: $ans1\n\nsolution2 -- max value: $ans2";
                     });
                   }
                 }),
